@@ -1,0 +1,42 @@
+VERSION = 1,
+
+option PZNS_RandomSpawns.IndoorSpawnOnly
+{
+	type = boolean,
+	default = true,
+
+	page = PZNS_RandomSpawns, translation = PZNS_RandomSpawns_IndoorSpawnOnly,
+}
+
+
+option PZNS_RandomSpawns.SpawnLimit
+{
+	type = integer,
+	min = 1,
+	max = 20,
+	default = 4,
+
+	page = PZNS_RandomSpawns, translation = PZNS_RandomSpawns_SpawnLimit,
+}
+
+
+option PZNS_RandomSpawns.SpawnDistance
+{
+	type = integer,
+	min = 15,
+	max = 45,
+	default = 30,
+
+	page = PZNS_RandomSpawns, translation = PZNS_RandomSpawns_SpawnDistance,
+}
+
+
+option PZNS_RandomSpawns.SpawnWithGunChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 30,
+
+	page = PZNS_RandomSpawns, translation = PZNS_RandomSpawns_SpawnWithGunChance,
+}
