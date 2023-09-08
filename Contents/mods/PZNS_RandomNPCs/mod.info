@@ -1,0 +1,7 @@
+name=PZNS_RandomNPCs
+poster=poster.png
+id=PZNS_RandomNPCs
+description=Project Zomboid NPC Spawning Framework - RandomNPCs
+url=https://github.com/shadowhunter100/PZNS
+versionMin=41.1
+require=PZNS_Framework
