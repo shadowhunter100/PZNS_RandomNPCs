@@ -1,0 +1,23 @@
+Sandbox_CH = {
+	Sandbox_PZNS_RandomNPCs = "PZNS Random NPCs",
+	
+	Sandbox_PZNS_RandomNPCs_HourlySpawnChance = "Hourly Spawn Chance",
+	Sandbox_PZNS_RandomNPCs_HourlySpawnChance_tooltip = "The chance an NPC will spawn every in-game hour (2-3 minutes by default)",
+
+	Sandbox_PZNS_RandomNPCs_SpawnLimit = "Random Spawn Limit",
+	Sandbox_PZNS_RandomNPCs_SpawnLimit_tooltip = "The max amount of random NPCs that can spawn, auto clean up is active so dead/unloaded NPCs will not be a problem.",
+
+	Sandbox_PZNS_RandomNPCs_IndoorSpawnOnly = "Indoor Spawn Only",
+	Sandbox_PZNS_RandomNPCs_IndoorSpawnOnly_tooltip = "(WIP)Check to activate, uncheck to deactivate - NPCs will only inside buildings or anywhere",
+
+	Sandbox_PZNS_RandomNPCs_SpawnDistance = "NPC Spawn Distance",
+	Sandbox_PZNS_RandomNPCs_SpawnDistance_tooltip = "Sets the distance NPC has to be away from the player to spawn. Random NPCs will not spawn on a visible square.",
+
+	Sandbox_PZNS_RandomNPCs_SpawnChanceHostile = "Hostile Chance",
+	Sandbox_PZNS_RandomNPCs_SpawnChanceHostile_tooltip = "Sets the chance the NPC will be hostile to the player on Spawn",	
+
+	Sandbox_PZNS_RandomNPCs_SpawnChanceWithGun = "Spawn with Gun Chance",
+	Sandbox_PZNS_RandomNPCs_SpawnChanceWithGun_tooltip =  "Sets the chance the NPC will be armed with a gun.",	
+
+
+}

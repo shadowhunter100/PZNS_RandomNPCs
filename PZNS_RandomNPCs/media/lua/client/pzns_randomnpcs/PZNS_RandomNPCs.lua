@@ -8,58 +8,10 @@ local PZNS_NPCsManager = require("04_data_management/PZNS_NPCsManager");
 -- Cows: Mod Variables.
 local isFrameWorkIsInstalled = false;
 local frameworkID = "PZNS_Framework";
-local PZNS_RandomNPCsPresets = require("pzns_randomnpcs/PZNS_RandomNPCsPresets");
 local PZNS_RandomNPCs = {};
-
---- Cows: Helper function to reduce copy-paste conditional spawn range checks.
----@param spawnX number
----@param spawnY number
----@param spawnZ number
----@return boolean
-local function isNPCInSpawnRange(spawnX, spawnY, spawnZ)
-    local playerSurvivor = getSpecificPlayer(0);
-    local isInSpawnRange = PZNS_WorldUtils.PZNS_IsSquareInPlayerSpawnRange(playerSurvivor, spawnX, spawnY, spawnZ);
-    return isInSpawnRange;
-end
-
---- Cows: Example of spawning in a random NPC.
----@return boolean
-function PZNS_RandomNPCs.spawnRandomNPCSurvivor(targetSquare, survivorID)
-    local isFemale = ZombRand(100) > 50; -- Cows: 50/50 roll for female spawn
-    local npcForeName = SurvivorFactory.getRandomForename(isFemale);
-    local npcSurname = SurvivorFactory.getRandomSurname();
-    local gameTimeStampString = tostring(getTimestampMs());
-    -- Cows: I recommend replacing the "PZNS_Survivor_" prefix if another modder wants to create their own random spawns. As long as the ID is unique, there shouldn't be a problem
-    local npcSurvivorID = "PZNS_RandomNPC_" .. npcForeName .. "_" .. npcSurname .. "_" .. gameTimeStampString;
-    if (survivorID ~= nil) then
-        npcSurvivorID = survivorID;
-    end
-    --
-    local npcSurvivor = PZNS_NPCsManager.createNPCSurvivor(
-        npcSurvivorID,
-        isFemale,
-        npcSurname,
-        npcForeName,
-        targetSquare
-    );
-    npcSurvivor.affection = ZombRand(100); -- Cows: Random between 0 and 100 affection, not everyone will love the player.
-    npcSurvivor.canSaveData = false;
-    -- Cows: Setup the skills and outfit, plus equipment...
-    PZNS_UtilsNPCs.PZNS_SetNPCPerksRandomly(npcSurvivor);
-    --
-    PZNS_RandomNPCsPresets.usePresetLightOutfit(npcSurvivor);
-    local spawnWithGun = ZombRand(0, 100) > 50;
-    if (spawnWithGun) then
-        PZNS_RandomNPCsPresets.usePistol(npcSurvivor);
-    else
-        PZNS_UtilsNPCs.PZNS_AddEquipWeaponNPCSurvivor(npcSurvivor, "Base.BaseballBat");
-    end
-    -- Cows: Set the job last, otherwise the NPC will function as if it didn't have a weapon.
-    npcSurvivor.jobName = "Wander In Cell";
-    local activeNPCs = PZNS_UtilsDataNPCs.PZNS_GetCreateActiveNPCsModData();
-    activeNPCs[npcSurvivorID] = npcSurvivor; -- Cows: This saves it to modData, which allows the npc to run while in-game, but does not create a save file.
-    return npcSurvivor;
-end
+local PZNS_RandomNPCsData = require("pzns_randomnpcs/PZNS_RandomNPCsData");
+local PZNS_RandomNPCsPresets = require("pzns_randomnpcs/PZNS_RandomNPCsPresets");
+local PZNS_RandomNPCsPresetsOutfits = require("pzns_randomnpcs/PZNS_RandomNPCsPresetsOutfits");
 
 --- Cows: Check if the Framework installed and create a group if true (and if needed)
 ---@return boolean
@@ -77,20 +29,114 @@ local function checkIsFrameWorkIsInstalled()
     return isFrameWorkIsInstalled;
 end
 
---- Cows: This is an in-game every one minute check (about 2 seconds in real-life time by default)
---- This is needed because not all NPCs will spawn within range of the player's loaded cell and must therefore be checked regularly to spawn in-game.
-local function npcsSpawnCheck()
-    if (isFrameWorkIsInstalled == true) then
-        -- Cows: These callbacks are essential to clean up the EveryOneMinute event calls, otherwise they remain in-game forever.
+--- Cows: Helper function to reduce copy-paste conditional spawn range checks.
+---@param spawnX number
+---@param spawnY number
+---@param spawnZ number
+---@return boolean
+local function isNPCInSpawnRange(spawnX, spawnY, spawnZ)
+    local playerSurvivor = getSpecificPlayer(0);
+    local isInSpawnRange = PZNS_WorldUtils.PZNS_IsSquareInPlayerSpawnRange(playerSurvivor, spawnX, spawnY, spawnZ);
+    return isInSpawnRange;
+end
 
-        --
-        local function checkIsNPCSpawned()
+--- Cows: Initailize an in-game every hour check (about 2-3 minutes in real-life time by default).
+local function initalizeRandomNPCsSpawn()
+    if (isFrameWorkIsInstalled == true) then
+        -- Cows: Do a cleanup before any spawning calls.
+        local function cleanUpRandomNPC()
+            local dataTable = PZNS_RandomNPCsData.getNPCDataTable();
+            -- Cows: Check how many spawned NPCs are in default spawn range
+            for _, npcSurvivor in pairs(dataTable) do
+                ---@type IsoPlayer
+                local npcIsoPlayer = npcSurvivor.npcIsoPlayerObject;
+                local spawnX, spawnY, spawnZ = npcIsoPlayer:getX(), npcIsoPlayer:getY(), npcIsoPlayer:getZ();
+                -- Cows: If the npc is out of range, remove them from the game world.
+                if (isNPCInSpawnRange(spawnX, spawnY, spawnZ) == false) then
+                    PZNS_RandomNPCsData.removeNPCFromTableAndWorld(npcSurvivor);
+                end
+            end
         end
-        Events.EveryOneMinute.Add(checkIsNPCSpawned);
+        -- Cows: Spawn the NPC conditionally with the sandbox options.
+        local function spawnRandomNPC()
+            -- local isSpawning = SandboxVars.PZNS_RandomNPCs.HourlySpawnChance >= ZombRand(0, 100);
+            local isSpawning = true;
+            -- Cows: Check if an npc is spawning based on the spawn chance.
+            if (isSpawning == true) then
+                local spawnLimit = SandboxVars.PZNS_RandomNPCs.SpawnLimit;
+                local isIndoorSpawn = SandboxVars.PZNS_RandomNPCs.IndoorSpawnOnly;
+                -- Cows: Check how many NPCs are currently spawned and do nothing if limit is reached.
+                local currentNPCsCount = PZNS_RandomNPCsData.getNPCsCount();
+                if (currentNPCsCount >= spawnLimit) then
+                    return;
+                end
+                -- local spawnSquare = nil;
+                local spawnSquare = getSpecificPlayer(0):getSquare();
+                -- Cows: Check if indoor spawn is active, and select a random indoor square in the specified range for spawning.
+                if (isIndoorSpawn == true) then
+                    -- Cows: If there are no valid indoor squares, do not spawn an NPC.
+                else
+                    -- Cows: Else select a random square in the specified range for spawning.
+                end
+                local npcSurvivor = PZNS_RandomNPCs.spawnRandomNPCSurvivor(spawnSquare);
+                PZNS_RandomNPCsData.addNPCToTable(npcSurvivor);
+            end
+        end
+
+        Events.EveryHours.Add(cleanUpRandomNPC);
+        Events.EveryHours.Add(spawnRandomNPC);
     end
 end
 
+--- Cows: Example of spawning in a random NPC.
+---@param spawnSquare any
+---@param survivorID any
+---@return nil | unknown
+function PZNS_RandomNPCs.spawnRandomNPCSurvivor(spawnSquare, survivorID)
+    if (spawnSquare == nil) then
+        return;
+    end
+    local isFemale = ZombRand(100) > 50; -- Cows: 50/50 roll for female spawn
+    local npcForeName = SurvivorFactory.getRandomForename(isFemale);
+    local npcSurname = SurvivorFactory.getRandomSurname();
+    local gameTimeStampString = tostring(getTimestampMs());
+    -- Cows: I recommend replacing the "PZNS_RandomNPCs_" prefix if another modder wants to create their own random spawns. As long as the ID is unique, there shouldn't be a problem
+    local npcSurvivorID = "PZNS_RandomNPCs_" .. npcForeName .. "_" .. npcSurname .. "_" .. gameTimeStampString;
+    if (survivorID ~= nil) then
+        npcSurvivorID = survivorID;
+    end
+    --
+    local npcSurvivor = PZNS_NPCsManager.createNPCSurvivor(
+        npcSurvivorID,
+        isFemale,
+        npcSurname,
+        npcForeName,
+        spawnSquare
+    );
+    npcSurvivor.canSaveData = false; -- Cows: Default to false, so random NPCs will be cleaned up and removed as soon as they are unloaded.
+    -- Cows: Setup the skills and outfit, plus equipment...
+    PZNS_RandomNPCsPresets.useRandomPerks(npcSurvivor);
+    PZNS_RandomNPCsPresets.useRandomOutfit(npcSurvivor);
+    PZNS_RandomNPCsPresetsOutfits.useMeleeRandom(npcSurvivor); -- Cows: Assign a random melee weapon.
+    local isSpawnWithGun = SandboxVars.PZNS_RandomNPCs.SpawnChanceWithGun >= ZombRand(0, 100);
+    -- Cows: Spawn with a gun using the sandboxVars value.
+    if (isSpawnWithGun) then
+        PZNS_RandomNPCsPresetsOutfits.useGunPistol(npcSurvivor);
+    end
+    -- Cows: Check if spawned NPC is hostile using sandboxVars value.
+    local isNPCHostile = SandboxVars.PZNS_RandomNPCs.SpawnChanceHostile >= ZombRand(0, 100);
+    if (isNPCHostile == true) then
+        npcSurvivor.affection = 0;
+        npcSurvivor.textObject:setDefaultColors(225, 0, 0, 0.8); -- Red text
+    end
+    -- Cows: Set the job last, otherwise the NPC will function as if it didn't have a weapon.
+    npcSurvivor.jobName = "Wander In Cell";
+    local activeNPCs = PZNS_UtilsDataNPCs.PZNS_GetCreateActiveNPCsModData();
+    activeNPCs[npcSurvivorID] = npcSurvivor; -- Cows: This saves it to modData, which allows the npc to run while in-game, but does not create a save file.
+    return npcSurvivor;
+end
+
 Events.OnGameStart.Add(checkIsFrameWorkIsInstalled);
-Events.OnGameStart.Add(npcsSpawnCheck);
+Events.OnGameStart.Add(initalizeRandomNPCsSpawn);
 
 return PZNS_RandomNPCs;

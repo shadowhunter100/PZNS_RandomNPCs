@@ -13,33 +13,19 @@ function PZNS_RandomNPCsPresets.usePresetPerks(npcSurvivor)
     return npcSurvivor;
 end
 
----comment
+--- Cows: Random Perks for NPCs.
 ---@param npcSurvivor any
 ---@return any
-function PZNS_RandomNPCsPresets.usePresetLightOutfit(npcSurvivor)
-    PZNS_UtilsNPCs.PZNS_AddEquipClothingNPCSurvivor(npcSurvivor, "Base.Tshirt_PoliceBlue");
-    PZNS_UtilsNPCs.PZNS_AddEquipClothingNPCSurvivor(npcSurvivor, "Base.Trousers_Police");
-    PZNS_UtilsNPCs.PZNS_AddEquipClothingNPCSurvivor(npcSurvivor, "Base.Socks_Ankle");
-    PZNS_UtilsNPCs.PZNS_AddEquipClothingNPCSurvivor(npcSurvivor, "Base.Shoes_Black");
-    PZNS_UtilsNPCs.PZNS_AddEquipWeaponNPCSurvivor(npcSurvivor, "Base.Pistol");
-    PZNS_UtilsNPCs.PZNS_SetLoadedGun(npcSurvivor);
-    PZNS_UtilsNPCs.PZNS_AddItemToInventoryNPCSurvivor(npcSurvivor, "Base.9mmClip");
-    PZNS_UtilsNPCs.PZNS_AddItemToInventoryNPCSurvivor(npcSurvivor, "Base.9mmClip");
-    PZNS_UtilsNPCs.PZNS_AddItemsToInventoryNPCSurvivor(npcSurvivor, "Base.Bullets9mm", 60);
+function PZNS_RandomNPCsPresets.useRandomPerks(npcSurvivor)
+    PZNS_UtilsNPCs.PZNS_SetNPCPerksRandomly(npcSurvivor);
     return npcSurvivor;
 end
 
----comment
+--- WIP - Cows: Have NPC use weapons based on their Perks.
 ---@param npcSurvivor any
 ---@return any
-function PZNS_RandomNPCsPresets.useGunPistol(npcSurvivor)
-    PZNS_UtilsNPCs.PZNS_AddEquipWeaponNPCSurvivor(npcSurvivor, "Base.Pistol");
-    PZNS_UtilsNPCs.PZNS_SetLoadedGun(npcSurvivor);
-    PZNS_UtilsNPCs.PZNS_AddItemToInventoryNPCSurvivor(npcSurvivor, "Base.9mmClip");
-    PZNS_UtilsNPCs.PZNS_AddItemsToInventoryNPCSurvivor(npcSurvivor, "Base.Bullets9mm", 15);
-    PZNS_UtilsNPCs.PZNS_AddItemsToInventoryNPCSurvivor(npcSurvivor, "Base.Bullets9mm", 15);
+function PZNS_RandomNPCsPresets.usePerksBasedWeapons(npcSurvivor)
     return npcSurvivor;
 end
-
 
 return PZNS_RandomNPCsPresets;
