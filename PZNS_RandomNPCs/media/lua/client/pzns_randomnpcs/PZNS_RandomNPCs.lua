@@ -45,14 +45,19 @@ local function initalizeRandomNPCsSpawn()
     if (isFrameWorkIsInstalled == true) then
         -- Cows: Do a cleanup before any spawning calls.
         local function cleanUpRandomNPC()
-            local dataTable = PZNS_RandomNPCsData.getNPCDataTable();
+            local dataTable = PZNS_RandomNPCsData.getOrCreateNPCDataTable();
             -- Cows: Check how many spawned NPCs are in default spawn range
             for _, npcSurvivor in pairs(dataTable) do
                 ---@type IsoPlayer
-                local npcIsoPlayer = npcSurvivor.npcIsoPlayerObject;
-                local spawnX, spawnY, spawnZ = npcIsoPlayer:getX(), npcIsoPlayer:getY(), npcIsoPlayer:getZ();
-                -- Cows: If the npc is out of range, remove them from the game world.
-                if (isNPCInSpawnRange(spawnX, spawnY, spawnZ) == false) then
+                local npcIsoPlayerObject = npcSurvivor.npcIsoPlayerObject;
+                if (npcIsoPlayerObject) then
+                    local spawnX, spawnY, spawnZ = npcIsoPlayerObject:getX(), npcIsoPlayerObject:getY(), npcIsoPlayerObject:getZ();
+                    -- Cows: If the npc is out of range, remove them from the game world.
+                    if (isNPCInSpawnRange(spawnX, spawnY, spawnZ) == false) then
+                        PZNS_RandomNPCsData.removeNPCFromTableAndWorld(npcSurvivor);
+                    end
+                else
+                    -- Cows: Else clean up if there's no IsoPlayer in the world.
                     PZNS_RandomNPCsData.removeNPCFromTableAndWorld(npcSurvivor);
                 end
             end
@@ -116,7 +121,7 @@ function PZNS_RandomNPCs.spawnRandomNPCSurvivor(spawnSquare, survivorID)
     npcSurvivor.canSaveData = false; -- Cows: Default to false, so random NPCs will be cleaned up and removed as soon as they are unloaded.
     -- Cows: Setup the skills and outfit, plus equipment...
     PZNS_RandomNPCsPresets.useRandomPerks(npcSurvivor);
-    PZNS_RandomNPCsPresets.useRandomOutfit(npcSurvivor);
+    PZNS_RandomNPCsPresetsOutfits.useRandomOutfit(npcSurvivor);
     PZNS_RandomNPCsPresetsOutfits.useMeleeRandom(npcSurvivor); -- Cows: Assign a random melee weapon.
     local isSpawnWithGun = SandboxVars.PZNS_RandomNPCs.SpawnChanceWithGun >= ZombRand(0, 100);
     -- Cows: Spawn with a gun using the sandboxVars value.
