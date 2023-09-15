@@ -36,22 +36,22 @@ end
 ---@return boolean
 local function isNPCInSpawnRange(spawnX, spawnY, spawnZ)
     local playerSurvivor = getSpecificPlayer(0);
-    local isInSpawnRange = PZNS_WorldUtils.PZNS_IsSquareInPlayerSpawnRange(playerSurvivor, spawnX, spawnY, spawnZ);
-    return isInSpawnRange;
+    return PZNS_WorldUtils.PZNS_IsSquareInPlayerSpawnRange(playerSurvivor, spawnX, spawnY, spawnZ);
 end
 
 --- Cows: Initailize an in-game every hour check (about 2-3 minutes in real-life time by default).
 local function initalizeRandomNPCsSpawn()
     if (isFrameWorkIsInstalled == true) then
         -- Cows: Do a cleanup before any spawning calls.
-        local function cleanUpRandomNPC()
+        local function cleanUpRandomNPCs()
             local dataTable = PZNS_RandomNPCsData.getOrCreateNPCDataTable();
             -- Cows: Check how many spawned NPCs are in default spawn range
             for _, npcSurvivor in pairs(dataTable) do
                 ---@type IsoPlayer
                 local npcIsoPlayerObject = npcSurvivor.npcIsoPlayerObject;
                 if (npcIsoPlayerObject) then
-                    local spawnX, spawnY, spawnZ = npcIsoPlayerObject:getX(), npcIsoPlayerObject:getY(), npcIsoPlayerObject:getZ();
+                    local spawnX, spawnY, spawnZ = npcIsoPlayerObject:getX(), npcIsoPlayerObject:getY(),
+                        npcIsoPlayerObject:getZ();
                     -- Cows: If the npc is out of range, remove them from the game world.
                     if (isNPCInSpawnRange(spawnX, spawnY, spawnZ) == false) then
                         PZNS_RandomNPCsData.removeNPCFromTableAndWorld(npcSurvivor);
@@ -63,33 +63,43 @@ local function initalizeRandomNPCsSpawn()
             end
         end
         -- Cows: Spawn the NPC conditionally with the sandbox options.
-        local function spawnRandomNPC()
-            -- local isSpawning = SandboxVars.PZNS_RandomNPCs.HourlySpawnChance >= ZombRand(0, 100);
-            local isSpawning = true;
-            -- Cows: Check if an npc is spawning based on the spawn chance.
-            if (isSpawning == true) then
-                local spawnLimit = SandboxVars.PZNS_RandomNPCs.SpawnLimit;
-                local isIndoorSpawn = SandboxVars.PZNS_RandomNPCs.IndoorSpawnOnly;
-                -- Cows: Check how many NPCs are currently spawned and do nothing if limit is reached.
-                local currentNPCsCount = PZNS_RandomNPCsData.getNPCsCount();
-                if (currentNPCsCount >= spawnLimit) then
-                    return;
+        local function spawnRandomNPCs()
+            -- Cows: Spawn up to the number of NPCs specified
+            local spawns = 0;
+            getSpecificPlayer(0):Say("spawnLimit: " .. tostring(SandboxVars.PZNS_RandomNPCs.MaxSpawnLimit));
+            getSpecificPlayer(0):Say("spawnChance: " .. tostring(SandboxVars.PZNS_RandomNPCs.HourlySpawnChance));
+            for i = 1, SandboxVars.PZNS_RandomNPCs.HourlySpawnLimit do
+                local spawnRoll = ZombRand(0, 100);
+                local isSpawning = SandboxVars.PZNS_RandomNPCs.HourlySpawnChance >= spawnRoll;
+                -- Cows: Check if an npc is spawning based on the spawn chance.
+                getSpecificPlayer(0):Say("spawnRoll: " .. tostring(spawnRoll));
+                getSpecificPlayer(0):Say("isSpawning: " .. tostring(isSpawning));
+                if (isSpawning == true) then
+                    spawns = spawns + 1;
+                    local spawnLimit = SandboxVars.PZNS_RandomNPCs.MaxSpawnLimit;
+                    local isIndoorSpawn = SandboxVars.PZNS_RandomNPCs.IndoorSpawnOnly;
+                    -- Cows: Check how many NPCs are currently spawned and do nothing if limit is reached.
+                    local currentNPCsCount = PZNS_RandomNPCsData.getNPCsCount();
+                    if (currentNPCsCount >= spawnLimit) then
+                        return;
+                    end
+                    -- local spawnSquare = nil;
+                    local spawnSquare = getSpecificPlayer(0):getSquare();
+                    -- WIP - Cows: Check if indoor spawn is active, and select a random indoor square in the specified range for spawning.
+                    if (isIndoorSpawn == true) then
+                        -- Cows: If there are no valid indoor squares, do not spawn an NPC.
+                    else
+                        -- Cows: Else select a random square in the specified range for spawning.
+                    end
+                    getSpecificPlayer(0):Say("Spawns: " .. tostring(spawns));
+                    local npcSurvivor = PZNS_RandomNPCs.spawnRandomNPCSurvivor(spawnSquare);
+                    PZNS_RandomNPCsData.addNPCToTable(npcSurvivor);
                 end
-                -- local spawnSquare = nil;
-                local spawnSquare = getSpecificPlayer(0):getSquare();
-                -- Cows: Check if indoor spawn is active, and select a random indoor square in the specified range for spawning.
-                if (isIndoorSpawn == true) then
-                    -- Cows: If there are no valid indoor squares, do not spawn an NPC.
-                else
-                    -- Cows: Else select a random square in the specified range for spawning.
-                end
-                local npcSurvivor = PZNS_RandomNPCs.spawnRandomNPCSurvivor(spawnSquare);
-                PZNS_RandomNPCsData.addNPCToTable(npcSurvivor);
             end
         end
 
-        Events.EveryHours.Add(cleanUpRandomNPC);
-        Events.EveryHours.Add(spawnRandomNPC);
+        Events.EveryHours.Add(cleanUpRandomNPCs);
+        Events.EveryHours.Add(spawnRandomNPCs);
     end
 end
 
@@ -121,8 +131,8 @@ function PZNS_RandomNPCs.spawnRandomNPCSurvivor(spawnSquare, survivorID)
     npcSurvivor.canSaveData = false; -- Cows: Default to false, so random NPCs will be cleaned up and removed as soon as they are unloaded.
     -- Cows: Setup the skills and outfit, plus equipment...
     PZNS_RandomNPCsPresets.useRandomPerks(npcSurvivor);
-    PZNS_RandomNPCsPresetsOutfits.useRandomOutfit(npcSurvivor);
-    PZNS_RandomNPCsPresetsOutfits.useMeleeRandom(npcSurvivor); -- Cows: Assign a random melee weapon.
+    PZNS_RandomNPCsPresetsOutfits.useOutfitRandom(npcSurvivor); -- Cows: Assign an outfit
+    PZNS_RandomNPCsPresetsOutfits.useMeleeRandom(npcSurvivor);  -- Cows: Assign a random melee weapon.
     local isSpawnWithGun = SandboxVars.PZNS_RandomNPCs.SpawnChanceWithGun >= ZombRand(0, 100);
     -- Cows: Spawn with a gun using the sandboxVars value.
     if (isSpawnWithGun) then

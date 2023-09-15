@@ -10,14 +10,24 @@ option PZNS_RandomNPCs.HourlySpawnChance
 	page = PZNS_RandomNPCs, translation = PZNS_RandomNPCs_HourlySpawnChance,
 }
 
-option PZNS_RandomNPCs.SpawnLimit
+option PZNS_RandomNPCs.HourlySpawnLimit
+{
+	type = integer,
+	min = 1,
+	max = 4,
+	default = 1,
+
+	page = PZNS_RandomNPCs, translation = PZNS_RandomNPCs_HourlySpawnLimit,
+}
+
+option PZNS_RandomNPCs.MaxSpawnLimit
 {
 	type = integer,
 	min = 1,
 	max = 20,
 	default = 4,
 
-	page = PZNS_RandomNPCs, translation = PZNS_RandomNPCs_SpawnLimit,
+	page = PZNS_RandomNPCs, translation = PZNS_RandomNPCs_MaxSpawnLimit,
 }
 
 option PZNS_RandomNPCs.IndoorSpawnOnly

@@ -4,20 +4,30 @@ local PZNS_UtilsNPCs = require("02_mod_utils/PZNS_UtilsNPCs");
 local PZNS_RandomNPCsData = {};
 local randomNPCsTable = {};
 
+---comment
+---@return integer
 function PZNS_RandomNPCsData.getNPCsCount()
     return #randomNPCsTable;
 end
 
+---comment
+---@return table
 function PZNS_RandomNPCsData.getOrCreateNPCDataTable()
     randomNPCsTable = ModData.getOrCreate("PZNS_RandomNPCsDataTable");
     return randomNPCsTable;
 end
 
+---comment
+---@param npcSurvivor any
+---@return table
 function PZNS_RandomNPCsData.addNPCToTable(npcSurvivor)
     randomNPCsTable[npcSurvivor.survivorID] = npcSurvivor;
     return randomNPCsTable;
 end
 
+--- Cows: If the random NPC is invited by the player (canSaveData = true), the npc will be managed and saved by the framework.
+---@param npcSurvivor any
+---@return table
 function PZNS_RandomNPCsData.removeNPCFromTableAndWorld(npcSurvivor)
     PZNS_UtilsNPCs.PZNS_ClearQueuedNPCActions(npcSurvivor);
     local npcIsoPlayer = npcSurvivor.npcIsoPlayerObject;
@@ -26,12 +36,13 @@ function PZNS_RandomNPCsData.removeNPCFromTableAndWorld(npcSurvivor)
         -- Cows: Remove the IsoPlayer from the world then nil the table key-value data.
         npcIsoPlayer:removeFromSquare();
         npcIsoPlayer:removeFromWorld();
-        npcIsoPlayer:removeSaveFile(); -- Cows: Remove the IsoPlayer SaveFile? I am curious about how it tracks the save file...
     end
     randomNPCsTable[npcSurvivor.survivorID] = nil;
     return randomNPCsTable;
 end
 
+---comment
+---@return table
 function PZNS_RandomNPCsData.wipeData()
     for k1, v1 in pairs(randomNPCsTable) do
         local npcSurvivor = v1;
