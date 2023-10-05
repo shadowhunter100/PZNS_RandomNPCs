@@ -39,6 +39,30 @@ local function isNPCInSpawnRange(spawnX, spawnY, spawnZ)
     return PZNS_WorldUtils.PZNS_IsSquareInPlayerSpawnRange(playerSurvivor, spawnX, spawnY, spawnZ);
 end
 
+--- Cows: Credits to "theangrybagel" who said he was too lazy to make a Git PR... so its here
+--- Discord: @theangrybagel
+---@return IsoGridSquare
+local function getNearbySpawnSquare()
+    -- WIP - Cows: TODO: Need to add some additional checks in the future, cannot spawn in player sight, cannot spawn in player home base, etc...
+    local function getSpawnOffset()
+        local maxDistance = SandboxVars.PZNS_RandomNPCs.SpawnDistance;
+        local minDistance = math.floor(maxDistance * 2/3);
+        local angle = ZombRandFloat(0, 2 * math.pi);
+        local distance = ZombRandFloat(minDistance, maxDistance);
+        local offset = {};
+        offset.x = math.floor(distance * math.cos(angle));
+        offset.y = math.floor(distance * math.sin(angle));
+        return offset;
+    end
+    local spawnPos = {};
+    local p = getSpecificPlayer(0);
+    local spawnOffset = getSpawnOffset();
+    spawnPos.x = p:getX() + spawnOffset.x;
+    spawnPos.y = p:getY() + spawnOffset.y;
+    local spawnSquare = getCell():getGridSquare(spawnPos.x, spawnPos.y, 0);
+    return spawnSquare;
+end
+
 --- Cows: Initailize an in-game every hour check (about 2-3 minutes in real-life time by default).
 local function initalizeRandomNPCsSpawn()
     if (isFrameWorkIsInstalled == true) then
@@ -66,14 +90,10 @@ local function initalizeRandomNPCsSpawn()
         local function spawnRandomNPCs()
             -- Cows: Spawn up to the number of NPCs specified
             local spawns = 0;
-            getSpecificPlayer(0):Say("spawnLimit: " .. tostring(SandboxVars.PZNS_RandomNPCs.MaxSpawnLimit));
-            getSpecificPlayer(0):Say("spawnChance: " .. tostring(SandboxVars.PZNS_RandomNPCs.HourlySpawnChance));
             for i = 1, SandboxVars.PZNS_RandomNPCs.HourlySpawnLimit do
                 local spawnRoll = ZombRand(0, 100);
                 local isSpawning = SandboxVars.PZNS_RandomNPCs.HourlySpawnChance >= spawnRoll;
                 -- Cows: Check if an npc is spawning based on the spawn chance.
-                getSpecificPlayer(0):Say("spawnRoll: " .. tostring(spawnRoll));
-                getSpecificPlayer(0):Say("isSpawning: " .. tostring(isSpawning));
                 if (isSpawning == true) then
                     spawns = spawns + 1;
                     local spawnLimit = SandboxVars.PZNS_RandomNPCs.MaxSpawnLimit;
@@ -83,21 +103,18 @@ local function initalizeRandomNPCsSpawn()
                     if (currentNPCsCount >= spawnLimit) then
                         return;
                     end
-                    -- local spawnSquare = nil;
-                    local spawnSquare = getSpecificPlayer(0):getSquare();
+                    local spawnSquare = getNearbySpawnSquare();
                     -- WIP - Cows: Check if indoor spawn is active, and select a random indoor square in the specified range for spawning.
                     if (isIndoorSpawn == true) then
                         -- Cows: If there are no valid indoor squares, do not spawn an NPC.
                     else
                         -- Cows: Else select a random square in the specified range for spawning.
                     end
-                    getSpecificPlayer(0):Say("Spawns: " .. tostring(spawns));
                     local npcSurvivor = PZNS_RandomNPCs.spawnRandomNPCSurvivor(spawnSquare);
                     PZNS_RandomNPCsData.addNPCToTable(npcSurvivor);
                 end
             end
         end
-
         Events.EveryHours.Add(cleanUpRandomNPCs);
         Events.EveryHours.Add(spawnRandomNPCs);
     end
