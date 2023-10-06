@@ -5,7 +5,7 @@ Sandbox_EN = {
 	Sandbox_PZNS_RandomNPCs_HourlySpawnChance_tooltip = "The chance an NPC will spawn every in-game hour (2-3 minutes by default)",
 
 	Sandbox_PZNS_RandomNPCs_HourlySpawnLimit = "Hourly Spawn Limit",
-	Sandbox_PZNS_RandomNPCs_HourlySpawnLimit_tooltip = "The maximum number of NPCs that can spawn per hour.",
+	Sandbox_PZNS_RandomNPCs_HourlySpawnLimit_tooltip = "The maximum number of NPCs that can spawn per in-game hour.",
 
 	Sandbox_PZNS_RandomNPCs_MaxSpawnLimit = "Max Random Spawn Limit",
 	Sandbox_PZNS_RandomNPCs_MaxSpawnLimit_tooltip = "The max number of NPCs that can be active, auto cleanup is active so dead/unloaded NPCs SHOULD NOT be a problem.",
@@ -14,7 +14,7 @@ Sandbox_EN = {
 	Sandbox_PZNS_RandomNPCs_IndoorSpawnOnly_tooltip = "NPCs will only inside roofed buildings",
 
 	Sandbox_PZNS_RandomNPCs_SpawnDistance = "(WIP) NPC Spawn Distance",
-	Sandbox_PZNS_RandomNPCs_SpawnDistance_tooltip = "Sets the distance NPC has to be away from the player to spawn. Random NPCs will not spawn on a visible square.",
+	Sandbox_PZNS_RandomNPCs_SpawnDistance_tooltip = "Sets the distance NPC has to be away from the player to spawn.",
 
 	Sandbox_PZNS_RandomNPCs_SpawnChanceHostile = "Hostile Chance",
 	Sandbox_PZNS_RandomNPCs_SpawnChanceHostile_tooltip = "Sets the chance the NPC will be hostile to the player on Spawn",	

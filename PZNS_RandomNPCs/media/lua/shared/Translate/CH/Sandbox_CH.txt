@@ -1,26 +1,26 @@
-Sandbox_CH = {
+Sandbox_CN = {
 	Sandbox_PZNS_RandomNPCs = "PZNS Random NPCs",
 	
-	Sandbox_PZNS_RandomNPCs_HourlySpawnChance = "Hourly Spawn Chance",
-	Sandbox_PZNS_RandomNPCs_HourlySpawnChance_tooltip = "The chance an NPC will spawn every in-game hour (2-3 minutes by default)",
+	Sandbox_PZNS_RandomNPCs_HourlySpawnChance = "每小時生成機會",
+	Sandbox_PZNS_RandomNPCs_HourlySpawnChance_tooltip = "遊戲中每個小時（差不多 2-3 分鐘）出現 NPC 的幾率",
 
-	Sandbox_PZNS_RandomNPCs_HourlySpawnLimit = "Hourly Spawn Limit",
-	Sandbox_PZNS_RandomNPCs_HourlySpawnLimit_tooltip = "The maximum number of NPCs that can spawn per hour.",
+	Sandbox_PZNS_RandomNPCs_HourlySpawnLimit = "每小時生成限制",
+	Sandbox_PZNS_RandomNPCs_HourlySpawnLimit_tooltip = "遊戲中每小時可生成的最大 NPC 數量.",
 
-	Sandbox_PZNS_RandomNPCs_MaxSpawnLimit = "Random Spawn Limit",
-	Sandbox_PZNS_RandomNPCs_MaxSpawnLimit_tooltip = "The max amount of random NPCs that can spawn, auto clean up is active so dead/unloaded NPCs will not be a problem.",
+	Sandbox_PZNS_RandomNPCs_MaxSpawnLimit = "隨機生成限制",
+	Sandbox_PZNS_RandomNPCs_MaxSpawnLimit_tooltip = "可以生成的隨機 NPC 的最大數量，自動清理處於活動狀態，因此死亡/卸載的 NPC 不應該成為問題.",
 
-	Sandbox_PZNS_RandomNPCs_IndoorSpawnOnly = "Indoor Spawn Only",
-	Sandbox_PZNS_RandomNPCs_IndoorSpawnOnly_tooltip = "(WIP)Check to activate, uncheck to deactivate - NPCs will only inside buildings or anywhere",
+	Sandbox_PZNS_RandomNPCs_IndoorSpawnOnly = "(未完成)僅限室內生成",
+	Sandbox_PZNS_RandomNPCs_IndoorSpawnOnly_tooltip = "(未完成) NPC 只會在有屋頂的建築物內生成",
 
-	Sandbox_PZNS_RandomNPCs_SpawnDistance = "NPC Spawn Distance",
-	Sandbox_PZNS_RandomNPCs_SpawnDistance_tooltip = "Sets the distance NPC has to be away from the player to spawn. Random NPCs will not spawn on a visible square.",
+	Sandbox_PZNS_RandomNPCs_SpawnDistance = "NPC 生成距離",
+	Sandbox_PZNS_RandomNPCs_SpawnDistance_tooltip = "設定 NPC 生成時必須遠離玩家的距離.",
 
-	Sandbox_PZNS_RandomNPCs_SpawnChanceHostile = "Hostile Chance",
-	Sandbox_PZNS_RandomNPCs_SpawnChanceHostile_tooltip = "Sets the chance the NPC will be hostile to the player on Spawn",	
+	Sandbox_PZNS_RandomNPCs_SpawnChanceHostile = "NPC 敵對機會",
+	Sandbox_PZNS_RandomNPCs_SpawnChanceHostile_tooltip = "設定 NPC 在生成時對玩家懷有敵意的幾率",	
 
-	Sandbox_PZNS_RandomNPCs_SpawnChanceWithGun = "Spawn with Gun Chance",
-	Sandbox_PZNS_RandomNPCs_SpawnChanceWithGun_tooltip =  "Sets the chance the NPC will be armed with a gun.",	
+	Sandbox_PZNS_RandomNPCs_SpawnChanceWithGun = "NPC 生成時有槍械幾率",
+	Sandbox_PZNS_RandomNPCs_SpawnChanceWithGun_tooltip =  "設定 NPC 裝備槍枝的幾率.",	
 
 
 }
