@@ -13,8 +13,8 @@ Sandbox_CN = {
 	Sandbox_PZNS_RandomNPCs_IndoorSpawnOnly = "(未完成)仅限室内生成",
 	Sandbox_PZNS_RandomNPCs_IndoorSpawnOnly_tooltip = "(未完成) NPC 只会在有屋顶的建筑物内生成",
 
-	Sandbox_PZNS_RandomNPCs_SpawnDistance = "NPC 生成距离",
-	Sandbox_PZNS_RandomNPCs_SpawnDistance_tooltip = "设置 NPC 生成时必须远离玩家的距离.",
+	Sandbox_PZNS_RandomNPCs_SpawnDistance = "(未完成) NPC 生成距离",
+	Sandbox_PZNS_RandomNPCs_SpawnDistance_tooltip = "(未完成) 设置 NPC 生成时必须远离玩家的距离.",
 
 	Sandbox_PZNS_RandomNPCs_SpawnChanceHostile = "NPC 敌对机会",
 	Sandbox_PZNS_RandomNPCs_SpawnChanceHostile_tooltip = "设置 NPC 在生成时对玩家怀有敌意的几率",	
