@@ -25,7 +25,7 @@ function PZNS_RandomNPCsData.addNPCToTable(npcSurvivor)
     return randomNPCsTable;
 end
 
---- Cows: If the random NPC is invited by the player (canSaveData = true), the npc will be managed and saved by the framework.
+--- Cows: If the random NPC is invited by the player (canSaveData = true), the npc will be managed and saved by the main PZNS framework.
 ---@param npcSurvivor any
 ---@return table
 function PZNS_RandomNPCsData.removeNPCFromTableAndWorld(npcSurvivor)
